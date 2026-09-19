@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PhotoFilter, FilterOption } from '../types';
 import { 
   X, 
@@ -270,21 +271,35 @@ export const BoothView: React.FC<BoothViewProps> = ({ onExit, onPhotosCaptured }
           />
 
           {/* Camera Flash effect */}
-          {isFlashing && (
-            <div className="absolute inset-0 bg-white z-40 pointer-events-none animate-flash" />
-          )}
+          <AnimatePresence>
+            {isFlashing && (
+              <motion.div 
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 bg-white z-40 pointer-events-none" 
+              />
+            )}
+          </AnimatePresence>
 
-          {/* Large Minimalist Countdown Overlay */}
-          {countdown !== null && (
-            <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/30 backdrop-blur-[1px]">
-              <div 
-                key={countdown}
-                className="text-[120px] sm:text-[180px] md:text-[220px] font-bold text-white/95 select-none tracking-tighter drop-shadow-2xl animate-fade-in"
-              >
-                {countdown}
+          {/* Large Minimalist Countdown Overlay with Apple spring pop */}
+          <AnimatePresence mode="wait">
+            {countdown !== null && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/35 backdrop-blur-[2px]">
+                <motion.div 
+                  key={countdown}
+                  initial={{ scale: 0.4, opacity: 0, filter: 'blur(8px)' }}
+                  animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+                  exit={{ scale: 1.35, opacity: 0, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-[130px] sm:text-[190px] md:text-[230px] font-bold text-white select-none tracking-tighter drop-shadow-2xl font-mono-stamp"
+                >
+                  {countdown}
+                </motion.div>
               </div>
-            </div>
-          )}
+            )}
+          </AnimatePresence>
 
           {/* Camera Error State */}
           {cameraError && (
@@ -323,50 +338,64 @@ export const BoothView: React.FC<BoothViewProps> = ({ onExit, onPhotosCaptured }
           )}
 
           {/* Filter Bar overlay inside camera when picker opened */}
-          {showFilterPicker && (
-            <div className="absolute bottom-24 sm:bottom-28 left-4 right-4 z-30 flex justify-center">
-              <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full flex gap-1.5 overflow-x-auto max-w-full no-scrollbar shadow-2xl">
-                {FILTER_LIST.map((filter) => {
-                  const isSelected = currentFilter === filter.id;
-                  return (
-                    <button
-                      key={filter.id}
-                      onClick={() => setCurrentFilter(filter.id)}
-                      className={`px-3 py-1 rounded-full text-[10px] font-mono-stamp uppercase tracking-wider transition-all whitespace-nowrap ${
-                        isSelected
-                          ? 'bg-white text-black font-bold'
-                          : 'text-white/70 hover:text-white hover:bg-white/10'
-                      }`}
-                    >
-                      {filter.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {showFilterPicker && (
+              <motion.div 
+                initial={{ opacity: 0, y: 16, scale: 0.94 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.94 }}
+                transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+                className="absolute bottom-24 sm:bottom-28 left-4 right-4 z-30 flex justify-center"
+              >
+                <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full flex gap-1.5 overflow-x-auto max-w-full no-scrollbar shadow-2xl">
+                  {FILTER_LIST.map((filter) => {
+                    const isSelected = currentFilter === filter.id;
+                    return (
+                      <button
+                        key={filter.id}
+                        onClick={() => setCurrentFilter(filter.id)}
+                        className={`px-3 py-1 rounded-full text-[10px] font-mono-stamp uppercase tracking-wider transition-all whitespace-nowrap ${
+                          isSelected
+                            ? 'bg-white text-black font-bold'
+                            : 'text-white/70 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        {filter.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Bottom Viewport Control Cluster */}
           <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col items-center z-20">
             <div className="flex items-center gap-6 sm:gap-8">
               
               {/* Flip Button */}
-              <button
+              <motion.button
                 id="booth-flip-camera-btn"
                 onClick={handleToggleFacingMode}
                 disabled={isCapturingSequence}
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all disabled:opacity-30"
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors disabled:opacity-30 cursor-pointer"
                 title="Flip Camera"
               >
                 <SwitchCamera className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
+              </motion.button>
 
               {/* Center Shutter Button */}
-              <button
+              <motion.button
                 id="booth-shutter-btn"
                 onClick={startPhotoboothSequence}
                 disabled={isCapturingSequence}
-                className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white flex items-center justify-center p-1 border-4 border-white/20 active:scale-95 transition-transform disabled:opacity-40 disabled:pointer-events-none shadow-xl"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white flex items-center justify-center p-1 border-4 border-white/20 disabled:opacity-40 disabled:pointer-events-none shadow-xl cursor-pointer"
                 title="Capture 4 Photos"
                 aria-label="Capture 4 Photos"
               >
@@ -379,14 +408,17 @@ export const BoothView: React.FC<BoothViewProps> = ({ onExit, onPhotosCaptured }
                     <div className="w-3.5 h-3.5 rounded-full bg-black/90" />
                   )}
                 </div>
-              </button>
+              </motion.button>
 
               {/* Filter Picker Button */}
-              <button
+              <motion.button
                 id="booth-filter-toggle-btn"
                 onClick={() => setShowFilterPicker(!showFilterPicker)}
                 disabled={isCapturingSequence}
-                className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center transition-all disabled:opacity-30 ${
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center transition-colors disabled:opacity-30 cursor-pointer ${
                   showFilterPicker || currentFilter !== 'normal' 
                     ? 'border-white bg-white text-black' 
                     : 'border-white/20 text-white hover:bg-white hover:text-black'
@@ -394,7 +426,7 @@ export const BoothView: React.FC<BoothViewProps> = ({ onExit, onPhotosCaptured }
                 title="Select Filter"
               >
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
+              </motion.button>
 
             </div>
           </div>

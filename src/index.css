@@ -1,10 +1,21 @@
 @import "tailwindcss";
 
+:root {
+  --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --apple-spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 @layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     font-family: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: #EDEAE3;
     color: #1A1A1A;
+    transition: background-color 0.4s var(--apple-ease);
   }
 
   h1, h2, h3, .font-display {
@@ -15,6 +26,10 @@
   .font-mono-stamp {
     font-family: 'Helvetica Neue', Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
     letter-spacing: 0.05em;
+  }
+
+  button, a {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 

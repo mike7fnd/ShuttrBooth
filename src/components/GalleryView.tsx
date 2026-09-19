@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PhotoStripData } from '../types';
 import { 
   Camera, 
@@ -152,7 +153,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-          {strips.map((strip) => {
+          {strips.map((strip, idx) => {
             const frameCfg = FRAMES_CONFIG[strip.frameStyle] || FRAMES_CONFIG['classic-white'];
             const formattedDate = new Date(strip.createdAt).toLocaleDateString('en-US', {
               month: 'short',
@@ -161,23 +162,32 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             });
 
             return (
-              <div
+              <motion.div
                 key={strip.id}
                 id={`gallery-card-${strip.id}`}
                 onClick={() => setSelectedStrip(strip)}
-                className="group relative cursor-pointer flex flex-col p-2.5 sm:p-3 rounded-sm shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.35, 
+                  delay: Math.min(idx * 0.05, 0.4), 
+                  ease: [0.16, 1, 0.3, 1] 
+                }}
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative cursor-pointer flex flex-col p-2.5 sm:p-3 rounded-sm shadow-md hover:shadow-xl transition-shadow"
                 style={{ backgroundColor: frameCfg.bg }}
               >
                 {/* 4 Photos Mini Preview */}
                 <div className="space-y-1.5 flex-1">
-                  {strip.photos.slice(0, 4).map((p, idx) => (
+                  {strip.photos.slice(0, 4).map((p, pIdx) => (
                     <div 
-                      key={idx} 
+                      key={pIdx} 
                       className="w-full aspect-[4/3] bg-neutral-200 rounded-[1px] overflow-hidden"
                     >
                       <img
                         src={p}
-                        alt={`Photo ${idx + 1}`}
+                        alt={`Photo ${pIdx + 1}`}
                         className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"
                       />
@@ -191,7 +201,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                     className="font-bold text-[9px] sm:text-[10px] tracking-widest truncate uppercase"
                     style={{ color: frameCfg.text }}
                   >
-                    {strip.caption || 'PHOTObOOTH'}
+                    {strip.caption || 'SHUTTRbOOTH'}
                   </div>
                   <div 
                     className="font-mono-stamp text-[7px] sm:text-[8px] tracking-wider uppercase opacity-50 mt-0.5"
@@ -210,113 +220,129 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                 >
                   <Trash2 className="w-3 h-3" />
                 </button>
-              </div>
+              </motion.div>
             );
           })}
         </div>
       )}
 
       {/* Detail Modal when a photo strip is selected */}
-      {selectedStrip && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative bg-[#F9F8F6] rounded-sm max-w-lg w-full p-6 shadow-2xl border border-black/10 my-8">
-            
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedStrip(null)}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-black/5 text-black/70 hover:text-black transition-colors"
+      <AnimatePresence>
+        {selectedStrip && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+            onClick={() => setSelectedStrip(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 16 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative bg-[#F9F8F6] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-black/10 my-8"
             >
-              <X className="w-4 h-4" />
-            </button>
-
-            <h3 className="text-xl font-bold tracking-tight text-[#1A1A1A] mb-4">
-              Photostrip Details
-            </h3>
-
-            {/* Strip Preview Container */}
-            <div className="flex justify-center py-2">
-              <div 
-                className="w-[220px] sm:w-[240px] p-3 rounded-sm shadow-xl border border-black/10 flex flex-col gap-2"
-                style={{ backgroundColor: FRAMES_CONFIG[selectedStrip.frameStyle]?.bg || '#fff' }}
+              
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedStrip(null)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-black/5 text-black/70 hover:text-black transition-colors"
               >
-                {selectedStrip.photos.map((p, i) => (
-                  <div key={i} className="w-full aspect-[4/3] bg-neutral-100 rounded-[1px] overflow-hidden border border-black/5">
-                    <img src={p} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                  </div>
-                ))}
-                
-                <div className="pt-2 text-center">
-                  <div 
-                    className="font-bold text-[10px] tracking-widest uppercase"
-                    style={{ color: FRAMES_CONFIG[selectedStrip.frameStyle]?.text || '#1A1A1A' }}
-                  >
-                    {selectedStrip.caption || 'PHOTObOOTH'}
-                  </div>
-                  <div 
-                    className="font-mono-stamp text-[8px] uppercase opacity-50 mt-0.5"
-                    style={{ color: FRAMES_CONFIG[selectedStrip.frameStyle]?.text || '#1A1A1A' }}
-                  >
-                    {new Date(selectedStrip.createdAt).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
+                <X className="w-4 h-4" />
+              </button>
+
+              <h3 className="text-xl font-bold tracking-tight text-[#1A1A1A] mb-4">
+                Photostrip Details
+              </h3>
+
+              {/* Strip Preview Container */}
+              <div className="flex justify-center py-2">
+                <div 
+                  className="w-[220px] sm:w-[240px] p-3 rounded-sm shadow-xl border border-black/10 flex flex-col gap-2"
+                  style={{ backgroundColor: FRAMES_CONFIG[selectedStrip.frameStyle]?.bg || '#fff' }}
+                >
+                  {selectedStrip.photos.map((p, i) => (
+                    <div key={i} className="w-full aspect-[4/3] bg-neutral-100 rounded-[1px] overflow-hidden border border-black/5">
+                      <img src={p} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                  ))}
+                  
+                  <div className="pt-2 text-center">
+                    <div 
+                      className="font-bold text-[10px] tracking-widest uppercase"
+                      style={{ color: FRAMES_CONFIG[selectedStrip.frameStyle]?.text || '#1A1A1A' }}
+                    >
+                      {selectedStrip.caption || 'SHUTTRbOOTH'}
+                    </div>
+                    <div 
+                      className="font-mono-stamp text-[8px] uppercase opacity-50 mt-0.5"
+                      style={{ color: FRAMES_CONFIG[selectedStrip.frameStyle]?.text || '#1A1A1A' }}
+                    >
+                      {new Date(selectedStrip.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 pt-4 border-t border-black/10">
-              <button
-                onClick={() => handleDelete(selectedStrip.id)}
-                className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-red-600 hover:text-red-700 py-2 px-3 rounded hover:bg-red-50 transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete</span>
-              </button>
-
-              <div className="flex items-center gap-2">
+              {/* Action Buttons */}
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-2.5 pt-4 border-t border-black/10">
                 <button
-                  onClick={() => handleDownload(selectedStrip)}
-                  disabled={isProcessing}
-                  className="inline-flex items-center gap-1.5 border border-black/20 hover:border-black text-[#1A1A1A] text-[10px] font-medium uppercase tracking-wider py-2 px-3 rounded transition-colors disabled:opacity-50"
-                  title="Download full-resolution PNG"
+                  onClick={() => handleDelete(selectedStrip.id)}
+                  className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-red-600 hover:text-red-700 py-2 px-3 rounded-full hover:bg-red-50 transition-colors"
                 >
-                  <Download className="w-3 h-3" />
-                  <span>Download</span>
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete</span>
                 </button>
 
-                <button
-                  onClick={() => handleShare(selectedStrip)}
-                  disabled={isProcessing}
-                  className="inline-flex items-center gap-1.5 border border-black/20 hover:border-black text-[#1A1A1A] text-[10px] font-medium uppercase tracking-wider py-2 px-3 rounded transition-colors disabled:opacity-50"
-                  title="Share or copy strip"
-                >
-                  <Share2 className="w-3 h-3" />
-                  <span>Share</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleDownload(selectedStrip)}
+                    disabled={isProcessing}
+                    className="inline-flex items-center gap-1.5 border border-black/20 hover:border-black text-[#1A1A1A] text-[10px] font-medium uppercase tracking-wider py-2 px-3.5 rounded-full transition-colors disabled:opacity-50"
+                    title="Download full-resolution PNG"
+                  >
+                    <Download className="w-3 h-3" />
+                    <span>Download</span>
+                  </button>
 
-                <button
-                  onClick={() => window.print()}
-                  className="inline-flex items-center gap-1.5 border border-black/20 hover:border-black text-[#1A1A1A] text-[10px] font-medium uppercase tracking-wider py-2 px-3 rounded transition-colors"
-                >
-                  <Printer className="w-3 h-3" />
-                  <span>Print</span>
-                </button>
+                  <button
+                    onClick={() => handleShare(selectedStrip)}
+                    disabled={isProcessing}
+                    className="inline-flex items-center gap-1.5 border border-black/20 hover:border-black text-[#1A1A1A] text-[10px] font-medium uppercase tracking-wider py-2 px-3.5 rounded-full transition-colors disabled:opacity-50"
+                    title="Share or copy strip"
+                  >
+                    <Share2 className="w-3 h-3" />
+                    <span>Share</span>
+                  </button>
 
-                <button
-                  onClick={() => setSelectedStrip(null)}
-                  className="bg-[#1A1A1A] hover:bg-black text-white text-[10px] font-medium uppercase tracking-wider py-2 px-4 rounded transition-all"
-                >
-                  Close
-                </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="inline-flex items-center gap-1.5 border border-black/20 hover:border-black text-[#1A1A1A] text-[10px] font-medium uppercase tracking-wider py-2 px-3.5 rounded-full transition-colors"
+                  >
+                    <Printer className="w-3 h-3" />
+                    <span>Print</span>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedStrip(null)}
+                    className="bg-[#1A1A1A] hover:bg-black text-white text-[10px] font-medium uppercase tracking-wider py-2 px-4 rounded-full transition-all"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
-            </div>
 
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

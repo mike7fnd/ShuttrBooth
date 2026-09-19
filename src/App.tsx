@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { PageView, PhotoFilter, PhotoStripData } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -70,42 +71,56 @@ export default function App() {
       )}
 
       {/* Main Content Pages */}
-      <main className="flex-1 flex flex-col">
-        {currentPage === 'home' && (
-          <HomeView
-            onStartBooth={() => setCurrentPage('booth')}
-            onOpenGallery={() => setCurrentPage('gallery')}
-            recentStrips={savedStrips}
-            onSelectStrip={handleSelectStripFromHome}
-          />
-        )}
+      <main className="flex-1 flex flex-col relative overflow-hidden">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 12, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.99 }}
+            transition={{
+              duration: 0.38,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="flex-1 flex flex-col w-full"
+          >
+            {currentPage === 'home' && (
+              <HomeView
+                onStartBooth={() => setCurrentPage('booth')}
+                onOpenGallery={() => setCurrentPage('gallery')}
+                recentStrips={savedStrips}
+                onSelectStrip={handleSelectStripFromHome}
+              />
+            )}
 
-        {currentPage === 'booth' && (
-          <BoothView
-            onExit={() => setCurrentPage('home')}
-            onPhotosCaptured={handlePhotosCaptured}
-          />
-        )}
+            {currentPage === 'booth' && (
+              <BoothView
+                onExit={() => setCurrentPage('home')}
+                onPhotosCaptured={handlePhotosCaptured}
+              />
+            )}
 
-        {currentPage === 'result' && (
-          <ResultView
-            initialPhotos={activeCapturedPhotos}
-            initialFilter={activeFilter}
-            onRetake={() => setCurrentPage('booth')}
-            onSavedToGallery={handleSavedToGallery}
-            onOpenGallery={() => setCurrentPage('gallery')}
-            onShowToast={showToast}
-          />
-        )}
+            {currentPage === 'result' && (
+              <ResultView
+                initialPhotos={activeCapturedPhotos}
+                initialFilter={activeFilter}
+                onRetake={() => setCurrentPage('booth')}
+                onSavedToGallery={handleSavedToGallery}
+                onOpenGallery={() => setCurrentPage('gallery')}
+                onShowToast={showToast}
+              />
+            )}
 
-        {currentPage === 'gallery' && (
-          <GalleryView
-            strips={savedStrips}
-            onStartBooth={() => setCurrentPage('booth')}
-            onDeleteStrip={handleDeleteStrip}
-            onShowToast={showToast}
-          />
-        )}
+            {currentPage === 'gallery' && (
+              <GalleryView
+                strips={savedStrips}
+                onStartBooth={() => setCurrentPage('booth')}
+                onDeleteStrip={handleDeleteStrip}
+                onShowToast={showToast}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Global Toast Notification */}
