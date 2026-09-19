@@ -58,7 +58,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               transform: `translate(${mouseOffset.x * 0.2}px, ${mouseOffset.y * 0.2}px)`
             }}
           >
-            SHUTTRbOOTH
+            JAZZbOOTH
           </div>
         </div>
 
@@ -153,7 +153,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       {/* Minimal Footer */}
       <footer className="pt-6 pb-2 text-center text-[9px] text-[#1A1A1A]/30 font-mono-stamp uppercase tracking-widest z-10">
-        SHUTTRbOOTH
+        JAZZbOOTH
       </footer>
     </div>
   );

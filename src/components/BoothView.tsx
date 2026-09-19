@@ -186,7 +186,7 @@ export const BoothView: React.FC<BoothViewProps> = ({ onExit, onPhotosCaptured }
 
     ctx.font = '32px monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.fillText('PHOTObOOTH', 640, 550);
+    ctx.fillText('JAZZbOOTH', 640, 550);
 
     return canvas.toDataURL('image/jpeg', 0.9);
   };
@@ -465,7 +465,7 @@ export const BoothView: React.FC<BoothViewProps> = ({ onExit, onPhotosCaptured }
 
             {/* Strip Stamp Footer */}
             <div className="mt-auto pt-3 flex flex-col items-center gap-0.5 opacity-30">
-              <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#1A1A1A]">PHOTObOOTH</p>
+              <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#1A1A1A]">JAZZbOOTH</p>
               <p className="text-[7px] uppercase tracking-[0.1em] font-mono-stamp text-[#1A1A1A]">
                 {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>

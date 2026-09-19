@@ -307,7 +307,7 @@ export async function renderPhotoStrip(options: RenderStripOptions): Promise<str
       ctx.fillStyle = frameCfg.text;
       ctx.font = 'bold 36px "Space Grotesk", sans-serif';
       ctx.letterSpacing = '6px';
-      ctx.fillText('PHOTObOOTH', stripWidth / 2, currentY);
+      ctx.fillText('JAZZbOOTH', stripWidth / 2, currentY);
       currentY += 46;
     }
 
@@ -370,7 +370,7 @@ export async function renderPhotoStrip(options: RenderStripOptions): Promise<str
       ctx.fillStyle = frameCfg.text;
       ctx.font = 'bold 34px "Space Grotesk", sans-serif';
       ctx.letterSpacing = '6px';
-      ctx.fillText('PHOTObOOTH', gridWidth / 2, curY);
+      ctx.fillText('JAZZbOOTH', gridWidth / 2, curY);
       curY += 44;
     }
 

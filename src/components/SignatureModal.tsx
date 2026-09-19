@@ -312,7 +312,7 @@ export const SignatureModal: React.FC<SignatureModalProps> = ({
 
           {/* Canvas corner watermark line */}
           <div className="absolute bottom-3 right-3 text-[10px] font-mono-stamp text-black/30 pointer-events-none">
-            PhotoBooth Studio
+            Jazzbooth Studio
           </div>
         </div>
 

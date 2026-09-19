@@ -60,7 +60,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
       });
 
       const link = document.createElement('a');
-      link.download = `photobooth-${new Date(strip.createdAt).toISOString().slice(0, 10)}.png`;
+      link.download = `jazzbooth-${new Date(strip.createdAt).toISOString().slice(0, 10)}.png`;
       link.href = dataUrl;
       document.body.appendChild(link);
       link.click();
@@ -88,11 +88,11 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
 
       const res = await fetch(dataUrl);
       const blob = await res.blob();
-      const file = new File([blob], 'photobooth-strip.png', { type: 'image/png' });
+      const file = new File([blob], 'jazzbooth-strip.png', { type: 'image/png' });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
-          title: 'My PHOTObOOTH Strip',
+          title: 'My JAZZbOOTH Strip',
           text: 'Take four. Keep the moment.',
           files: [file],
         });
@@ -201,7 +201,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                     className="font-bold text-[9px] sm:text-[10px] tracking-widest truncate uppercase"
                     style={{ color: frameCfg.text }}
                   >
-                    {strip.caption || 'SHUTTRbOOTH'}
+                    {strip.caption || 'JAZZbOOTH'}
                   </div>
                   <div 
                     className="font-mono-stamp text-[7px] sm:text-[8px] tracking-wider uppercase opacity-50 mt-0.5"
@@ -275,7 +275,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                       className="font-bold text-[10px] tracking-widest uppercase"
                       style={{ color: FRAMES_CONFIG[selectedStrip.frameStyle]?.text || '#1A1A1A' }}
                     >
-                      {selectedStrip.caption || 'SHUTTRbOOTH'}
+                      {selectedStrip.caption || 'JAZZbOOTH'}
                     </div>
                     <div 
                       className="font-mono-stamp text-[8px] uppercase opacity-50 mt-0.5"

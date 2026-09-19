@@ -191,7 +191,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
   const handleDownload = () => {
     if (!renderedImageUrl) return;
     const link = document.createElement('a');
-    const filename = `photobooth-${new Date().toISOString().slice(0, 10)}-${Date.now().toString().slice(-4)}.png`;
+    const filename = `jazzbooth-${new Date().toISOString().slice(0, 10)}-${Date.now().toString().slice(-4)}.png`;
     link.download = filename;
     link.href = renderedImageUrl;
     document.body.appendChild(link);
@@ -207,11 +207,11 @@ export const ResultView: React.FC<ResultViewProps> = ({
     try {
       const res = await fetch(renderedImageUrl);
       const blob = await res.blob();
-      const file = new File([blob], 'photobooth-strip.png', { type: 'image/png' });
+      const file = new File([blob], 'jazzbooth-strip.png', { type: 'image/png' });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
-          title: 'My PHOTObOOTH Strip',
+          title: 'My JAZZbOOTH Strip',
           text: 'Take four. Keep the moment.',
           files: [file],
         });
@@ -277,7 +277,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
               >
                 <img
                   src={renderedImageUrl}
-                  alt="PHOTObOOTH generated strip"
+                  alt="JAZZbOOTH generated strip"
                   className="w-full h-auto block transition-transform duration-700 ease-out pointer-events-none select-none"
                   draggable={false}
                 />
