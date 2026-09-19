@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { Analytics } from '@vercel/analytics/react';
 import { PageView, PhotoFilter, PhotoStripData } from './types';
 import { Header } from './components/Header';
 import { HomeView } from './components/HomeView';
@@ -128,6 +129,9 @@ export default function App() {
         message={toastMessage}
         onClose={() => setToastMessage(null)}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   );
 }
